@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 import okhttp3.OkHttpClient;
@@ -41,7 +42,9 @@ public class ScrollingActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = "https://www.instagram.com/graphql/query/?query_hash=bc3296d1ce80a24b1b6e40b1e72903f5&variables=%7B%22shortcode%22%3A%22CYougfBt6HW%22%2C%22first%22%3A120%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22KDMBAgC4AP______________________________AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%5C%22%7D%22%7D";
+
+                String shortcode = "CZKBjT4tXI-";
+                String url = "https://www.instagram.com/graphql/query/?query_hash=bc3296d1ce80a24b1b6e40b1e72903f5&variables=%7B%22shortcode%22%3A%22" + shortcode + "%22%2C%22first%22%3A120%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22KDMBAgC4AP______________________________AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%5C%22%7D%22%7D";
 
                 AsyncTask<String, Void, String> execute = new InstaFerch().execute(url);
 
@@ -94,19 +97,40 @@ public class ScrollingActivity extends AppCompatActivity {
 
             OkHttpClient client = new OkHttpClient();
 
-            String cookie = "mid=YYrdhgALAAEYiXPu0PW6m2YdYCKQ; ig_did=708EBF26-AFEE-4E07-BCB4-07E6C33C6979; csrftoken=IDl7KmC5Bg2tGJji0QvMYwVNwkTNROCt; ds_user_id=38081432117; sessionid=38081432117%3AMItMyvUQgRzJSl%3A27; shbid=\"2510\\05438081432117\\0541673551394:01f77485ff1ce56d575923891e5eda811d17219daf0b65414bc72a31b1bc399eee5d27e3\"; shbts=\"1642015394\\05438081432117\\0541673551394:01f772cd5bdc8a5b766bab05dda37f727bc8f4f20f3d8c9d0b8e959321bd51b7b1e02f1d\"; rur=\"RVA\\05438081432117\\0541673619478:01f74933844bc71dd5b679f47ba2497594f7300fc5894712b6cd920e0db84e18faea3e40\"";
-            ;
+            String cookie = "mid=YYrdhgALAAEYiXPu0PW6m2YdYCKQ; ig_did=708EBF26-AFEE-4E07-BCB4-07E6C33C6979; ds_user_id=38081432117; csrftoken=Qv2ZJ1iQNvQjTeutrVQ8Wlt8XKd6XORx; sessionid=38081432117:zMIenkyzhHUtQh:1; shbid=\"2510\\05438081432117\\0541681988916:01f7aa1c5a164c70cbada099aae687c50ce05ddd67c5d84aac7c13c9c1cf5ea724c7fc72\"; shbts=\"1650452916\\05438081432117\\0541681988916:01f72ccfee5843a778d5cd7f1ae821bc589fca0dd33314ee16391cf037fa8a764f652fad\"; rur=\"RVA\\05438081432117\\0541682066259:01f7385e3136fc8f6d7fc8b9425cd9eea87f1e9e42e4c5496b869fb4d85140d476439de1\"";
+
+
             Request request = new Request.Builder()
-                    .url(params[0])
+                    .url("https://www.instagram.com/donya/?__a=1")
                     .addHeader("cookie", cookie)
 
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
-                return response.body().string();
+
+                String edge_owner_to_timeline_media = Objects.requireNonNull(response.body()).string().split("edge_owner_to_timeline_media")[1];
+                String shortcode = edge_owner_to_timeline_media.split("\"shortcode\":\"")[1].split("\"")[0];
+
+                System.out.println("short code "+shortcode);
+                String url = "https://www.instagram.com/graphql/query/?query_hash=bc3296d1ce80a24b1b6e40b1e72903f5&variables=%7B%22shortcode%22%3A%22" + shortcode + "%22%2C%22first%22%3A120%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22KDMBAgC4AP______________________________AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%5C%22%7D%22%7D";
+
+                Request request2 = new Request.Builder()
+                        .url(url)
+                        .addHeader("cookie", cookie)
+                        .build();
+
+
+                try (Response response2 = client.newCall(request2).execute()) {
+                    return response2.body().string();
+                } catch (IOException e) {
+                    return null;
+                }
+
+
             } catch (IOException e) {
                 return null;
             }
+
 
         }
 
@@ -168,7 +192,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 Integer created_at = (Integer) ((JSONObject) jsonObject.get("node")).get("created_at");
                 java.util.Date time = new java.util.Date((long) created_at * 1000);
 
-                s += "https://instagram.com/" + username + " " + text.substring(0, Math.min(50,text.length()-1)) + "\n\n";
+                s += "https://instagram.com/" + username + " " + text.substring(0, Math.min(50, text.length() - 1)) + "\n\n";
 
             }
             return s;
