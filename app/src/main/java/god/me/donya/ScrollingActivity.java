@@ -23,7 +23,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -97,22 +96,47 @@ public class ScrollingActivity extends AppCompatActivity {
 
             OkHttpClient client = new OkHttpClient();
 
-            String cookie = "mid=YYrdhgALAAEYiXPu0PW6m2YdYCKQ; ig_did=708EBF26-AFEE-4E07-BCB4-07E6C33C6979; ds_user_id=38081432117; csrftoken=Qv2ZJ1iQNvQjTeutrVQ8Wlt8XKd6XORx; sessionid=38081432117:zMIenkyzhHUtQh:1; shbid=\"2510\\05438081432117\\0541681988916:01f7aa1c5a164c70cbada099aae687c50ce05ddd67c5d84aac7c13c9c1cf5ea724c7fc72\"; shbts=\"1650452916\\05438081432117\\0541681988916:01f72ccfee5843a778d5cd7f1ae821bc589fca0dd33314ee16391cf037fa8a764f652fad\"; rur=\"RVA\\05438081432117\\0541682066259:01f7385e3136fc8f6d7fc8b9425cd9eea87f1e9e42e4c5496b869fb4d85140d476439de1\"";
 
+            String cookie = "mid=YnAuvQALAAG5M9S-scqy1fcZT3EG; ig_did=FC5F1D71-F893-4831-9D31-E13FE356C69F; ig_nrcb=1; csrftoken=2y9aPvn5uajcxsoce6dj0BFrDlIhZ2Os; ds_user_id=46965647003; sessionid=46965647003:gowgt2O9E876ns:29; dpr=2.5; shbid=\"18799\\05446965647003\\0541685777395:01f7a72f7bee2cb0b7c7f543a63294adbaac9db51d4c58ba0d3d8ec9ba06d002e5a73186\"; shbts=\"1654241395\\05446965647003\\0541685777395:01f721d04fd185ceb3b324e702630a777da1cb4e44f263d04fd3f264e611d421f26f3c12\"; datr=7OmZYkO-Dnr4CQFkqhPJGjmX; rur=\"FRC\\05446965647003\\0541685790071:01f7d3f676f7d8d6ea67b53d1a618130599560a03cc7ebac51bdeb5fb7463c76013ec315\"";
 
             Request request = new Request.Builder()
-                    .url("https://www.instagram.com/donya/?__a=1")
+                    .url("https://i.instagram.com/api/v1/users/web_profile_info/?username=donya")
                     .addHeader("cookie", cookie)
+                    .addHeader("user-agent", "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36")
+                    .addHeader("sec-ch-ua", "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"102\", \"Google Chrome\";v=\"102\"")
+                    .addHeader("sec-ch-ua-mobile", "?0")
+                    .addHeader("referer", "https://www.instagram.com/p/CeUDkhxrdsk/")
+                    .addHeader( "accept", "*/*")
+                    .addHeader(  "accept-language", "en-US,en;q=0.9")
+                .addHeader(    "sec-ch-ua", "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"102\", \"Google Chrome\";v=\"102\"")
+                  .addHeader(  "sec-ch-ua-mobile", "?0")
+                 .addHeader(   "sec-ch-ua-platform", "\"Windows\"")
+                .addHeader(    "sec-fetch-dest", "empty")
+                .addHeader(    "sec-fetch-mode", "no-cors")
+                  .addHeader(  "sec-fetch-site", "same-site")
+                  .addHeader(  "x-asbd-id", "198387")
+                 .addHeader(   "x-csrftoken", "xQdcYg6QCFUrOtGiYTOxddGVoXsV9UhR")
+                 .addHeader(   "x-ig-app-id", "936619743392459")
+                  .addHeader(  "x-ig-www-claim", "hmac.AR2a0s-zR6Hdr23fE_Vi87zvcuSrHFY-d8M4qLMQoFBGCaq5")
+                  .addHeader(  "cookie", "mid=YilRLwALAAGjeUi_YBySMg6kQ-hO; ig_did=5D56230F-1B28-4239-BF5E-E5B1B9800D19; shbid=\"550\\05448586000684\\0541685604300:01f7f1aac8445c160872064eb126e5707c3ff62ecedc0f87e5fcb76228c8a394f02610ca\"; shbts=\"1654068300\\05448586000684\\0541685604300:01f78753db2cea07ffaad796e882c305bf2377e77e436a3e9bd4b0c2bd734930878b01ab\"; dpr=2.5; datr=XhSXYsttNzhSBBrOPvp-eIw6; ds_user_id=46965647003; csrftoken=xQdcYg6QCFUrOtGiYTOxddGVoXsV9UhR; sessionid=46965647003%3Az7YghuoBKPwFlZ%3A21; rur=\"FRC\\05446965647003\\0541685791495:01f73ba34dbb92212481c4a0e3b89508e1d11dbe7972269655d07d8af19c64b145ac4ec6\"")
+                 .addHeader(   "Referer", "https://www.instagram.com/")
+                 .addHeader(   "Referrer-Policy","strict-origin-when-cross-origin")
 
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
 
-                String edge_owner_to_timeline_media = Objects.requireNonNull(response.body()).string().split("edge_owner_to_timeline_media")[1];
+
+                String string = Objects.requireNonNull(response.body()).string();
+                System.out.println("coeeeeeeeee\n");
+                System.out.println(response.code());
+                System.err.println(string);
+                String edge_owner_to_timeline_media = string.split("edge_owner_to_timeline_media")[1];
                 String shortcode = edge_owner_to_timeline_media.split("\"shortcode\":\"")[1].split("\"")[0];
 
                 System.out.println("short code "+shortcode);
                 String url = "https://www.instagram.com/graphql/query/?query_hash=bc3296d1ce80a24b1b6e40b1e72903f5&variables=%7B%22shortcode%22%3A%22" + shortcode + "%22%2C%22first%22%3A120%2C%22after%22%3A%22%7B%5C%22bifilter_token%5C%22%3A+%5C%22KDMBAgC4AP______________________________AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%5C%22%7D%22%7D";
+                System.out.println(url);
 
                 Request request2 = new Request.Builder()
                         .url(url)
