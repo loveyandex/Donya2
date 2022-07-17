@@ -1,8 +1,17 @@
 package god.me.donya;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,6 +19,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
     @Test
     public void addition_isCorrect() {
 
@@ -56,6 +66,62 @@ public class ExampleUnitTest {
 
         String edge_owner_to_timeline_media = s.split("edge_owner_to_timeline_media")[1];
         String shortcode = edge_owner_to_timeline_media.split("\"shortcode\":\"")[1].split("\"")[0];
+
+
+        String mediaid = "2880799220627330897";
+
+
+        System.out.println("media id code " + mediaid);
+
+        Request request2 = new Request.Builder()
+
+                .url("https://i.instagram.com/api/v1/media/" + mediaid + "/comments/?can_support_threading=false")
+
+                .addHeader("accept", "*/*")
+                .addHeader("accept-language", "en-US,en;q=0.9")
+                .addHeader("sec-ch-ua", "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"102\", \"Google Chrome\";v=\"102\"")
+                .addHeader("sec-ch-ua-mobile", "?0")
+                .addHeader("sec-ch-ua-platform", "\"Windows\"")
+                .addHeader("sec-fetch-dest", "empty")
+                .addHeader("sec-fetch-mode", "no-cors")
+                .addHeader("sec-fetch-site", "same-site")
+
+                .addHeader("user-agent", "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36")
+                .addHeader("x-asbd-id", "198387")
+                .addHeader("x-csrftoken", "2y9aPvn5uajcxsoce6dj0BFrDlIhZ2Os")
+                .addHeader("x-ig-app-id", "936619743392459")
+                .addHeader("x-ig-www-claim", "hmac.AR2a0s-zR6Hdr23fE_Vi87zvcuSrHFY-d8M4qLMQoFBGCR-I")
+                .addHeader("cookie", "mid=Ys-a7gALAAFccH9dgywSNklzj3b5; ig_did=BF468BE1-101F-4637-810C-E48720DC72EE; csrftoken=tYlcavtQkoZOa5V760VUQtAbPhkK0A7q; ds_user_id=46965647003; sessionid=46965647003:OV4MxOECCmGrZz:18:AYe3UUHyAzTQVeSAXDFxPq7AIwrRW6ekGLT8-cXJnw; dpr=2.5; datr=np3PYiSMCPtzBMdH1w0HnESj; shbid=\"18799\\05446965647003\\0541689569741:01f73c2eed2b16bacb44f6b23e0fef56e36c6be533580d2f05df09f4ead85fd5a99a2530\"; shbts=\"1658033741\\05446965647003\\0541689569741:01f7687cfbc52770e03e6e20720b946d72afb23490faede4cfeaa5b258b8914f0e897e87\"; rur=\"RVA\\05446965647003\\0541689594278:01f7adf85801951fec08f2af079198d3073db25cf25ca989332169e91fa6474869b07c8b\"")
+                .addHeader("Referer", "https://www.instagram.com/")
+                .addHeader("Referrer-Policy", "strict-origin-when-cross-origin")
+.build();
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        try (Response response2 = client.newCall(request2).execute()) {
+
+            String string = response2.body().string();
+            System.out.println(string);
+
+            JSONObject jsonObject = new JSONObject(string);
+              String ss="";
+
+            JSONArray comments = (JSONArray) jsonObject.get("comments");
+            for (int i = 0; i < comments.length(); i++) {
+                JSONObject commentJSONObject = comments.getJSONObject(i);
+                String text = commentJSONObject.getString("text");
+                long created_at = commentJSONObject.getLong("created_at");
+                String username = commentJSONObject.getJSONObject("user").getString("username");
+                System.out.println();
+                ss += "https://instagram.com/" + username + " " + text.substring(0, Math.min(50, text.length() - 1)) + "\n\n";
+
+
+            }
+
+        } catch (IOException | JSONException e) {
+
+        }
 
 
         assertEquals(4, 2 + 2);
